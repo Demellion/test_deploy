@@ -1,0 +1,8 @@
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Logging
+metadata:
+  name: logging
+spec:
+  fluentd: {}
+  fluentbit: {}
+  controlNamespace: observability

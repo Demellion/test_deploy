@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: site-wordpress-issuer
+spec:
+  acme:
+    email: admin@example.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        clouddns:
+          project: site-wordpress
+          serviceAccountSecretRef:
+            name: prod-cloud-dns-secret
+            key: service-account.json

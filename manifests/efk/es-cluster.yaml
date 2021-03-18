@@ -1,0 +1,58 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: logging
+spec:
+  version: 7.9.0
+  nodeSets:
+  - name: master-nodes
+    count: 3
+    config:
+      node.master: true
+      node.data: false
+      node.ingest: false
+      node.ml: false
+      xpack.ml.enabled: true
+      node.remote_cluster_client: false
+    volumeClaimTemplates:
+    - metadata:
+        name: px-es-master-nodes
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: px-es-master-sc
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']
+  - name: data-nodes
+    count: 3
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: true
+      node.ml: true
+      node.remote_cluster_client: false
+    volumeClaimTemplates:
+    - metadata:
+        name: px-es-data-nodes
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: px-es-data-sc
+    podTemplate:
+      spec:
+        initContainers:
+        - name: sysctl
+          securityContext:
+            privileged: true
+          command: ['sh', '-c', 'sysctl -w vm.max_map_count=262144']

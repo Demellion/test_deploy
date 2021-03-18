@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: site-wordpress-certificate
+spec:
+  secretName: site-wordpress-tls
+  issuerRef:
+    name: site-wordpress-issuer
+  dnsNames:
+  - site-wordpress.com
+  - www.site-wordpress.com
